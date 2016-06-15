@@ -14,13 +14,16 @@ struct List{
 };
 
 
-
+void printH(Node *n);
 void insertEnd(List *l,Node *n);
 void printList(List *l);
 Node* initNode(int d);
 void createList(List *l);
 void pop(List *l);
 void removeElement(List *l, int value);
+Node* merge(Node *a, Node *b);
+void splitList(Node *source, Node **front, Node**back);
+void mergeSort(List *l);
 
 int main()
 {
@@ -32,7 +35,9 @@ int main()
 
     while(value != 'q'){
         cout << "Please enter a command: "<< endl <<
-                "A-add a node, P-pop first node, R-remove a node, L-display list." << endl;
+                "\tA-add a node, I-insert at front" << endl <<
+                "\tP-pop first node, R-remove a node," << endl <<
+                "\tS-sort list, L-display list." << endl;
         cin >> value;
         //If the value is lower case ( > 'Z' in binary),
         //remove the difference between upper and lower.
@@ -57,6 +62,10 @@ int main()
             cout << "Enter value to remove: " << endl;
             cin >> data;
             removeElement(linkedList, data);
+            break;
+        case 'S':
+            mergeSort(linkedList);
+            cout << "List sorted!" << endl;
             break;
          default:
             cout << "Invalid command" << endl;
@@ -145,7 +154,6 @@ void removeElement(List *l, int value){
 
 void printList(List *l){
     Node *ptr = l->head;
-
     if(l->head == NULL){
         cout << "List is empty." << endl;
     }
@@ -157,11 +165,11 @@ void printList(List *l){
 
 void createList(List *l){
     Node *a, *b, *c, *d, *e;
-    a = initNode(1);
+    a = initNode(5);
     b = initNode(2);
     c = initNode(3);
     d = initNode(4);
-    e = initNode(5);
+    e = initNode(1);
 
     insertEnd(l, a);
     insertEnd(l, b);
@@ -169,6 +177,102 @@ void createList(List *l){
     insertEnd(l, d);
     insertEnd(l, e);
 
+
+}
+
+//*******************************Mergesort***************************
+Node* merge(Node *a, Node *b){
+    Node *result = NULL;
+    /*
+    cout << "in merge" << endl;
+    List *front = (List*)malloc(sizeof(List));
+    List *back = (List*)malloc(sizeof(List));
+    front->head = a;
+    back->head = b;
+    cout<< "a" << endl ;
+    printList(front);
+    cout<< endl << "b" << endl ;
+    printList(back);
+*/
+
+    if(a == NULL){
+        return(b);
+    }
+    else if(b == NULL){
+        return(a);
+    }
+
+    if(a->data <= b->data){
+        result = a;
+        result->next = merge(a->next, b);
+    }
+    else{
+        result = b;
+        result->next = merge(a, b->next);
+    }
+    return(result);
+}
+
+void splitList(Node *source, List *front, List *back){
+
+    Node *fast, *slow;
+
+    if((source == NULL) || (source->next == NULL)){
+
+        front->head = source;
+        back = NULL;
+    }
+    else{
+        slow = source;
+        fast = source->next;
+        //This finds the mid point
+        while(fast != NULL){
+            fast = fast->next;
+            if(fast != NULL){
+                slow = slow->next;
+                fast = fast->next;
+            }
+        }
+
+
+        front->head = source;
+        back->head = slow->next;
+        slow->next = NULL;
+
+    }
+}
+
+void printH(Node *n){
+
+    if(n == NULL){
+        cout << "List is empty." << endl;
+    }
+    while(n != NULL){
+        cout << n->data << endl;
+        n = n->next;
+    }
+}
+
+void mergeSort(List *l){
+
+    Node *head = l->head;
+    List *first = (List*)malloc(sizeof(List));
+    List *second = (List*)malloc(sizeof(List));
+    first->head = second->head = NULL;
+
+    //base case
+    if((l->head == NULL) || (l->head->next == NULL))
+    {
+        return;
+    }
+
+    //split
+    splitList(head, first, second);
+
+    mergeSort(first);
+    mergeSort(second);
+
+    l->head = merge(first->head, second->head);
 
 }
 
