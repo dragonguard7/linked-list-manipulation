@@ -24,6 +24,7 @@ void removeElement(List *l, int value);
 Node* merge(Node *a, Node *b);
 void splitList(Node *source, Node **front, Node**back);
 void mergeSort(List *l);
+void push(List *l, Node *n);
 
 int main()
 {
@@ -35,7 +36,7 @@ int main()
 
     while(value != 'q'){
         cout << "Please enter a command: "<< endl <<
-                "\tA-add a node, I-insert at front" << endl <<
+                "\tA-add a node at end, I-insert at front" << endl <<
                 "\tP-pop first node, R-remove a node," << endl <<
                 "\tS-sort list, L-display list." << endl;
         cin >> value;
@@ -46,12 +47,16 @@ int main()
         if( value > 'Z'){ value -= ' ';}
         switch(value)
         {
-        case ('A'):
+        case 'A':
             cout << "Enter value to add: " << endl;
             cin >> data;
             insertEnd(linkedList, initNode(data));
             break;
-
+        case 'I':
+            cout << "Enter value to push: " << endl;
+            cin >> data;
+            push(linkedList, initNode(data));
+            break;
         case 'P':
             pop(linkedList);
             break;
@@ -99,6 +104,16 @@ Node *ptr = l->head;
     }
     cout << "Added " << n->data << endl;
     ptr->next = n;
+}
+void push(List *l, Node *n){
+    if(l->head == NULL){
+        //cout << "list null added " << n->data << endl;
+        l->head = n;
+        return;
+    }
+Node *ptr = l->head;
+    n->next = ptr;
+    l->head = n;
 }
 
 void pop(List *l){
