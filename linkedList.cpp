@@ -25,6 +25,7 @@ Node* merge(Node *a, Node *b);
 void splitList(Node *source, Node **front, Node**back);
 void mergeSort(List *l);
 void push(List *l, Node *n);
+void reverseList(List *l);
 
 int main()
 {
@@ -33,10 +34,12 @@ int main()
     char value = 0;
     int data;
     createList(linkedList);
-
+    //Print the current list out
+    printList(linkedList);
     while(value != 'q'){
         cout << "Please enter a command: "<< endl <<
                 "\tA-add a node at end, I-insert at front" << endl <<
+                "\tF-reverse list" << endl <<
                 "\tP-pop first node, R-remove a node," << endl <<
                 "\tS-sort list, L-display list." << endl;
         cin >> value;
@@ -51,6 +54,9 @@ int main()
             cout << "Enter value to add: " << endl;
             cin >> data;
             insertEnd(linkedList, initNode(data));
+            break;
+        case 'F':
+            reverseList(linkedList);
             break;
         case 'I':
             cout << "Enter value to push: " << endl;
@@ -94,7 +100,6 @@ Node* initNode(int d){
 void insertEnd(List *l, Node *n){
 
     if(l->head == NULL){
-        //cout << "list null added " << n->data << endl;
         l->head = n;
         return;
     }
@@ -102,12 +107,10 @@ Node *ptr = l->head;
     while(ptr->next != NULL){
         ptr = ptr->next;
     }
-    cout << "Added " << n->data << endl;
     ptr->next = n;
 }
 void push(List *l, Node *n){
     if(l->head == NULL){
-        //cout << "list null added " << n->data << endl;
         l->head = n;
         return;
     }
@@ -171,7 +174,9 @@ void printList(List *l){
     Node *ptr = l->head;
     if(l->head == NULL){
         cout << "List is empty." << endl;
+        return;
     }
+    cout << "Current list:" << endl;
     while(ptr != NULL){
         cout << ptr->data << endl;
         ptr = ptr->next;
@@ -191,6 +196,37 @@ void createList(List *l){
     insertEnd(l, c);
     insertEnd(l, d);
     insertEnd(l, e);
+
+
+}
+
+void reverseList(List *l){
+    List *temp = (List*)malloc(sizeof(List));
+    temp->head = NULL;
+    Node *tempPtr = temp->head, *listPtr = l->head, *helper;
+
+    //first node
+    if(listPtr != NULL){
+        helper = listPtr;
+        listPtr = listPtr->next;
+        tempPtr = helper;
+        tempPtr->next = NULL;
+    }
+
+    while(listPtr != NULL){
+
+        helper = listPtr;
+        listPtr = listPtr->next;
+
+        helper->next = tempPtr;
+        tempPtr = helper;
+
+
+    }
+    cout << "The list has been reversed!" << endl;
+    l->head = tempPtr;
+
+    free(temp);
 
 
 }
@@ -267,6 +303,8 @@ void printH(Node *n){
         n = n->next;
     }
 }
+
+
 
 void mergeSort(List *l){
 
